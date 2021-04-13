@@ -21,7 +21,19 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
+    "quotes": [1, "double"],
     // allow async-await
+    "no-unused-vars": [2, { 
+      // 允许声明未使用变量
+      "vars": "local",
+      // 参数不检查
+      "args": "none" 
+    }],
+    // 关闭语句强制分号结尾
+    "semi": [0],
+    "singleQuote":false,
+    //关闭禁止混用tab和空格
+    "no-mixed-spaces-and-tabs": [0],
     'generator-star-spacing': 'off',
     'space-before-function-paren': 0,
     // allow debugger during development

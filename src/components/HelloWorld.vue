@@ -25,7 +25,7 @@
         <el-aside :width="tabWidth + 'px'" class="master-aside">
           <!--  收缩按钮  -->
           <div
-            v-model="isCollapse"
+            :model="isCollapse"
             class="is-collapse"
             :width="tabWidth + 'px'"
           >
@@ -100,7 +100,7 @@
             class="little-aside little-aside-none"
           >
             <div
-              v-model="isCollapse"
+              :model="isCollapse"
               class="little-aside-title"
               :width="tabWidth + 'px'"
             >
@@ -135,8 +135,8 @@
             class="little-aside"
           >
             <div
-              v-model="isCollapse"
               class="little-aside-title"
+              :model="isCollapse"
               :width="tabWidth + 'px'"
             >
               FDI
@@ -287,7 +287,7 @@ export default {
     // 缩小aside
     isClose () {
       clearInterval(this.intelval)
-      console.log('isClose')
+      console.log("isClose")
       if (!this.isCollapse) {
         // console.log("缩小:"+this.isCollapse)
         this.intelval = setInterval(() => {
@@ -315,7 +315,7 @@ export default {
     openMessage (msg) {
       this.$message({
         message: msg,
-        type: 'success'
+        type: "success"
       })
     }
   }
