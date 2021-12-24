@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.orders.dao.AlarmsDao">
+
+    <!--警告类型-->
+    <select id="groupByAlarmsType" resultType="java.lang.String">
+        select
+            alarm_type
+        from
+            workordersystem.alarms
+        GROUP BY
+            alarm_type
+    </select>
+
+    <!--7日告警数-->
+    <select id="findAlarmsNumberByName" resultType="java.util.Map">
+        select
+        to_char(adtec_create_date,'yyyy-mm-dd') as times,
+        count(1)
+        from
+        workordersystem.alarms
+        where
+        adtec_create_date > to_char((now() - interval '7 DAY'),'yyyy-mm-dd 00:00:00')
+        and
+        adtec_create_date &lt; to_char(now(),'yyyy-mm-dd 00:00:00')
+        GROUP BY
+        times
+        ORDER BY
+        times
+    </select>
+
+    <!--当月告警数-->
+    <select id="findAlarmsMonthByName" resultType="java.util.Map">
+        select
+            to_char(adtec_create_date,'mm-dd') as times,
+            count(1)
+        from
+            workordersystem.alarms
+        where
+            adtec_create_date >= to_char(now(),'yyyy-mm-01 00:00:00')
+          and
+            adtec_create_date &lt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+        GROUP BY
+            times
+        ORDER BY
+            times
+    </select>
+
+    <!--当年告警数-->
+    <select id="findAlarmsYearByName" resultType="java.util.Map">
+        select
+            to_char(adtec_create_date,'yyyy-mm') as times,
+            count(1)
+        from
+            workordersystem.alarms
+        where
+            adtec_create_date >= to_char(now(),'yyyy-01-01 00:00:00')
+          and
+            adtec_create_date &lt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+        GROUP BY
+            times
+        ORDER BY
+            times
+    </select>
+
+    <!--今日告警数-->
+    <select id="findAlarmsNumberToday" resultType="java.lang.Integer">
+        select
+        count(1),
+        to_char(adtec_create_date,'yyyy-mm-dd') as times
+        from
+        workordersystem.alarms
+        where
+        adtec_create_date &gt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+        GROUP BY
+        times
+        ORDER BY
+        times
+    </select>
+
+    <!--告警数-->
+    <select id="findAlarmsNumber" resultType="java.lang.Integer">
+        select
+            count(1)
+        from
+            workordersystem.alarms
+    </select>
+</mapper>

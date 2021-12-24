@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.orders.dao.OrderExamineDao">
+
+    <!--来源系统类型-->
+    <select id="groupBySourceSystem" resultType="java.lang.String">
+        SELECT source_system
+        FROM workordersystem.order_examine
+        GROUP BY source_system
+    </select>
+
+    <!--来源系统类型-->
+    <select id="groupByTargetSystem" resultType="java.lang.String">
+        SELECT target_system
+        FROM workordersystem.order_examine
+        GROUP BY target_system
+    </select>
+
+    <!--7日审批数-->
+    <select id="findExamineApprovalNumberByName" resultType="java.util.Map">
+        select
+        to_char(adtec_create_date,'yyyy-mm-dd') as times,
+        count(1)
+        from
+        workordersystem.order_examine
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+              project_name = '${projectName}' and
+            </if>
+            adtec_create_date &gt; to_char((now() - interval '7 DAY'),'yyyy-mm-dd 00:00:00')
+            and
+            adtec_create_date &lt; to_char(now(),'yyyy-mm-dd 00:00:00')
+            and
+            examine_status = 1
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        times
+    </select>
+
+    <!--7日驳回数-->
+    <select id="findExamineOverruleNumberByName" resultType="java.util.Map">
+        select
+        to_char(adtec_create_date,'yyyy-mm-dd') as times,
+        count(1)
+        from
+        workordersystem.order_examine
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            adtec_create_date &gt; to_char((now() - interval '7 DAY'),'yyyy-mm-dd 00:00:00')
+            and
+            adtec_create_date &lt; to_char(now(),'yyyy-mm-dd 00:00:00')
+            and
+            examine_status = 2
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        times
+    </select>
+
+    <!--当月审批数-->
+    <select id="findExamineApprovalMonthByName" resultType="java.util.Map">
+        select
+        to_char(adtec_create_date,'mm-dd') as times,
+        count(1)
+        from
+        workordersystem.order_examine
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            adtec_create_date &gt;= to_char(now(),'yyyy-mm-01 00:00:00')
+            and
+            adtec_create_date &lt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+            and
+            examine_status = 1
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        times
+    </select>
+
+    <!--当月驳回数-->
+    <select id="findExamineOverruleMonthByName" resultType="java.util.Map">
+        select
+        to_char(adtec_create_date,'mm-dd') as times,
+        count(1)
+        from
+        workordersystem.order_examine
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            adtec_create_date &gt;= to_char(now(),'yyyy-mm-01 00:00:00')
+            and
+            adtec_create_date &lt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+            and
+            examine_status = 2
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        times
+    </select>
+
+    <!--当年审批数-->
+    <select id="findExamineApprovalYearByName" resultType="java.util.Map">
+        select
+        to_char(adtec_create_date,'yyyy-mm') as times,
+        count(1)
+        from
+        workordersystem.order_examine
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            adtec_create_date &gt;= to_char(now(),'yyyy-01-01 00:00:00')
+            and
+            adtec_create_date &lt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+            and
+            examine_status = 1
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        times
+    </select>
+
+    <!--当年驳回数-->
+    <select id="findExamineOverruleYearByName" resultType="java.util.Map">
+        select
+        to_char(adtec_create_date,'yyyy-mm') as times,
+        count(1)
+        from
+        workordersystem.order_examine
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            adtec_create_date &gt;= to_char(now(),'yyyy-01-01 00:00:00')
+            and
+            adtec_create_date &lt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+            and
+            examine_status = 2
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        times
+    </select>
+
+    <!--今日审批数-->
+    <select id="findExamineApprovalNumberToday" resultType="java.lang.Integer">
+        select
+        count(1),
+        to_char(adtec_create_date,'yyyy-mm-dd') as times
+        from
+        workordersystem.order_examine
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            adtec_create_date &gt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+            and
+            examine_status = 1
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        times
+    </select>
+
+    <!--今日驳回数-->
+    <select id="findExamineOverruleNumberToday" resultType="java.lang.Integer">
+        select
+        count(1),
+        to_char(adtec_create_date,'yyyy-mm-dd') as times
+        from
+        workordersystem.order_examine
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            adtec_create_date &gt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+            and
+            examine_status = 2
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        times
+    </select>
+
+    <!--审批总数-->
+    <select id="findExamineApprovalNumber" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        workordersystem.order_examine
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            examine_status = 1
+        </where>
+    </select>
+
+    <!--驳回总数-->
+    <select id="findExamineOverruleNumber" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        workordersystem.order_examine
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            examine_status = 2
+        </where>
+    </select>
+</mapper>

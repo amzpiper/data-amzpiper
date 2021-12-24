@@ -1,0 +1,63 @@
+spring:
+    datasource:
+
+        type: com.alibaba.druid.pool.DruidDataSource
+        druid:
+            driver-class-name: org.postgresql.Driver
+            url: jdbc:postgresql://124.70.25.215:3306/adtec?currentSchema=ordersystem
+            username: test
+            password: Test@123
+            #初始化连接大小
+            initial-size: 10
+            #最大连接数
+            max-active: 100
+            #最小空闲连接数
+            min-idle: 10
+            #获取连接时最大等待时间(ms)
+            max-wait: 60000
+            #开启缓存preparedStatement(PSCache)
+            pool-prepared-statements: true
+            #启用PSCache后，指定每个连接上PSCache的大小
+            max-pool-prepared-statement-per-connection-size: 20
+            #检测连接的间隔时间，若连接空闲时间 >= minEvictableIdleTimeMillis，则关闭物理连接
+            time-between-eviction-runs-millis: 60000
+            #连接保持空闲而不被驱逐的最小时间(ms)
+            min-evictable-idle-time-millis: 300000
+            #Oracle需要打开注释
+            #validation-query: SELECT 1 FROM DUAL
+            #申请连接时检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效（不影响性能）
+            test-while-idle: true
+            #申请连接时不检测连接是否有效
+            test-on-borrow: false
+            #归还连接时不检测连接是否有效
+            test-on-return: false
+            #配置访问内置监控页面，内置监控页面的首页是/druid/index.html
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            #配置监控统计拦截的filters（不配置则监控界面sql无法统计），监控统计filter:stat，日志filter:log4j，防御sql注入filter:wall
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+#        ##多数据源的配置
+#        dynamic:
+#            primary: postgresql1
+#            datasource:
+#                postgresql1:
+#                    driver-class-name: org.postgresql.Driver
+#                    url: jdbc:postgresql://124.70.25.215:3306/adtec?currentSchema=workordersystem
+#                    username: test
+#                    password: Test@123
+#                postgresql2:
+#                    driver-class-name: org.postgresql.Driver
+#                    url: jdbc:postgresql://124.70.25.215:3306/adtec?currentSchema=dwi_em
+#                    username: test
+#                    password: Test@123

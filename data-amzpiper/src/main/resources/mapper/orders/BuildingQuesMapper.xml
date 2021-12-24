@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.orders.dao.BuildingQuesDao">
+
+    <!--类型列表-->
+    <select id="groupByQuestionType" resultType="java.lang.String">
+        SELECT question_type
+        FROM dwi_em.dwi_em_tbb_building_ques_info
+        GROUP BY question_type
+    </select>
+
+    <!--分公司列表-->
+    <select id="groupByAreaName" resultType="java.lang.String">
+        SELECT area_name
+        FROM dwi_em.dwi_em_tbb_building_ques_info
+        WHERE area_name IS NOT NULL
+        and state = 1
+        GROUP BY area_name
+    </select>
+
+    <!--项目列表-->
+    <select id="groupByProjectName" resultType="java.lang.String">
+        SELECT project_name
+        FROM dwi_em.dwi_em_tbb_building_ques_info
+        <where>
+            project_name is not null
+            and
+            state = 1
+        <if test="areaName != null">
+            and
+            area_name = '${areaName}'
+        </if>
+        </where>
+        GROUP BY project_name
+    </select>
+
+    <!--7日工单数-->
+    <select id="findOrderNumberByName" resultType="java.util.Map">
+        select
+        to_char(create_date,'yyyy-mm-dd') as times,
+        count(1)
+        from
+        dwi_em.dwi_em_tbb_building_ques_info
+        <where>
+            <if test="areaName != null">
+            area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+            project_name = '${projectName}' and
+            </if>
+            state = 1
+            and
+            create_date &gt; to_char((now() - interval '7 DAY'),'yyyy-mm-dd 00:00:00')
+            and
+            create_date &lt; to_char(now(),'yyyy-mm-dd 00:00:00')
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+        area_name,
+        </if>
+        <if test="projectName != null">
+        project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+        area_name,
+        </if>
+        times
+    </select>
+
+    <!--当月每日工单数-->
+    <select id="findOrderMonthByName" resultType="java.util.Map">
+        select
+        to_char(create_date,'mm-dd') as times,
+        count(1)
+        from
+        dwi_em.dwi_em_tbb_building_ques_info
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            state = 1
+            and
+            create_date &gt;= to_char(now(),'yyyy-mm-01 00:00:00')
+            and
+            create_date &lt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        times
+    </select>
+
+    <!--当年每月工单数-->
+    <select id="findOrderYearByName" resultType="java.util.Map">
+        select
+        to_char(create_date,'yyyy-mm') as times,
+        count(1)
+        from
+        dwi_em.dwi_em_tbb_building_ques_info
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            state = 1
+            and
+            create_date &gt;= to_char(now(),'yyyy-01-01 00:00:00')
+            and
+            create_date &lt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+            area_name,
+        </if>
+        times
+    </select>
+
+    <select id="findDateIn7" resultType="java.util.Map">
+        select
+        to_char((now() - interval '1 DAY'),'yyyy-mm-dd') as time7,
+        to_char((now() - interval '2 DAY'),'yyyy-mm-dd') as time6,
+        to_char((now() - interval '3 DAY'),'yyyy-mm-dd') as time5,
+        to_char((now() - interval '4 DAY'),'yyyy-mm-dd') as time4,
+        to_char((now() - interval '5 DAY'),'yyyy-mm-dd') as time3,
+        to_char((now() - interval '6 DAY'),'yyyy-mm-dd') as time2,
+        to_char((now() - interval '7 DAY'),'yyyy-mm-dd') as time1
+    </select>
+
+    <select id="findOrderNumberToday" resultType="java.lang.Integer">
+         select
+        count(1),
+        to_char(create_date,'yyyy-mm-dd') as times
+        from
+        dwi_em.dwi_em_tbb_building_ques_info
+        <where>
+            <if test="areaName != null">
+              area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+              project_name = '${projectName}' and
+            </if>
+            state = 1
+            and
+            create_date &gt;= to_char(now(),'yyyy-mm-dd 00:00:00')
+        </where>
+        GROUP BY
+        <if test="areaName != null">
+        area_name,
+        </if>
+        <if test="projectName != null">
+        project_name,
+        </if>
+        times
+        ORDER BY
+        <if test="areaName != null">
+        area_name,
+        </if>
+        times
+    </select>
+
+    <!--工单总数-->
+    <select id="findOrderNumber" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        dwi_em.dwi_em_tbb_building_ques_info
+        <where>
+            <if test="areaName != null">
+                area_name = '${areaName}' and
+            </if>
+            <if test="projectName != null">
+                project_name = '${projectName}' and
+            </if>
+            state = 1
+        </where>
+    </select>
+</mapper>
