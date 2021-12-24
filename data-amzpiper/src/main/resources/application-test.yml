@@ -4,7 +4,7 @@ spring:
         type: com.alibaba.druid.pool.DruidDataSource
         druid:
             driver-class-name: org.postgresql.Driver
-            url: jdbc:postgresql://124.70.25.215:3306/adtec?currentSchema=ordersystem
+            url: jdbc:postgresql://127.0.0.0:3306/adtec?currentSchema=workordersystem
             username: test
             password: Test@123
             #初始化连接大小
